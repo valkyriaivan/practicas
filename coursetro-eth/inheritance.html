@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Inheritance</title>
+
+    <link rel="stylesheet" type="text/css" href="main-inh.css">
+
+    <script src="./node_modules/web3/dist/web3.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+
+        <h1>Inheritance</h1>
+
+        <h2 id="msg"></h2>
+
+        <img id="loader" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+
+        <label for="addC" class="col-lg-2 control-label owner">Add child</label>
+        <input id="childAddress" class="owner" type="text">
+        <button id="addC" class="owner">Add</button>
+
+        <input id="childId" type="text" class="owner">
+        <button id="seeC" class="owner">See child</button>
+
+        <button id="alive" class="owner">Still alive!</button>
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script>
+      if (typeof web3 !== 'undefined') {
+           web3 = new Web3(web3.currentProvider);
+       } else {
+           // set the provider you want from Web3.providers
+           web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+       }
+
+       web3.eth.defaultAccount = web3.eth.accounts[0];
+
+       var LastWillContract = web3.eth.contract([ { "constant": false, "inputs": [ { "name": "_address", "type": "address" } ], "name": "addChild", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "lastTouch", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "isDead", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [], "name": "stillAlive", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "childs", "outputs": [ { "name": "", "type": "address" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "depositFunds", "outputs": [], "payable": true, "stateMutability": "payable", "type": "function" }, { "inputs": [], "payable": true, "stateMutability": "payable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "_msg", "type": "string" } ], "name": "Status", "type": "event" } ]);
+
+       var LastWill = LastWillContract.at('0xe436c5ca26fc37f34fbebfbad06dd032aad111ca');
+
+       var statusEvent = LastWill.Status();
+
+       statusEvent.watch(function(error, result){
+         if (!error) {
+           $('#loader').hide();
+           $('#msg').html(result.args._msg);
+         } else{
+           $('#loader').hide();
+           console.log(error);
+         }
+       });
+
+        $("#addC").click(function() {
+            LastWill.addChild($("#childAddress").val(), (err, res) => {
+              if (err){
+                $('#loader').hide();
+                console.log('oh no');
+              }
+            });
+            $('#loader').show();
+        });
+
+        $("#alive").click(function() {
+            LastWill.stillAlive();
+            $('#loader').show();
+        });
+
+        $("#seeC").click(function() {
+            childs[] = LastWill.getChilds();
+            // $('#loader').show();
+            $('#msg').html(childs[0]);
+        });
+    </script>
+
+</body>
+</html>
