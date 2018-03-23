@@ -46,7 +46,7 @@
 
        var LastWillContract = web3.eth.contract([ { "constant": false, "inputs": [ { "name": "_address", "type": "address" } ], "name": "addChild", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "lastTouch", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "isDead", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [], "name": "stillAlive", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "uint256" } ], "name": "childs", "outputs": [ { "name": "", "type": "address" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "depositFunds", "outputs": [], "payable": true, "stateMutability": "payable", "type": "function" }, { "inputs": [], "payable": true, "stateMutability": "payable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "name": "_msg", "type": "string" } ], "name": "Status", "type": "event" } ]);
 
-       var LastWill = LastWillContract.at('0xe436c5ca26fc37f34fbebfbad06dd032aad111ca');
+       var LastWill = LastWillContract.at('0x83d8de77db73b89521c4b764999d4567c0702923');
 
        var statusEvent = LastWill.Status();
 
@@ -76,9 +76,9 @@
         });
 
         $("#seeC").click(function() {
-            childs[] = LastWill.getChilds();
+            childs = LastWill.childs(0);
             // $('#loader').show();
-            $('#msg').html(childs[0]);
+            $('#msg').html(childs);
         });
     </script>
 
