@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script language="javascript" type="text/javascript" src="web3.min.js"></script>
+    <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript" src="cards_abi.js"></script>
+    <script language="javascript" type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <style>
+      .grey {
+          -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+          filter: grayscale(100%);
+      }
+    </style>
+</head>
+<body>
+    <div class="container">
+      <button onclick="createCard(1)">Click me</button>
+      <button onclick="remGrey(1)">Try it</button>
+      <!-- <img src="./img/messi.png" alt="Messi" class="grey" height="200px" id="1">
+      <img src="./img/cristiano.png" alt="Cristiano" class="grey" height="200px" id="2">
+      <img src="./img/neymar.png" alt="Neymar" class="grey" height="200px" id="0"> -->
+      <div id="txStatus"></div>
+      <div id="cards"></div>
+      <div id="players"></div>
+    </div>
+
+    <script>
+      function remGrey(id){
+        var element = document.getElementById(id);
+        element.classList.remove("grey");
+      }
+      var cryptoCards;
+      var userAccount = "0xcb21ce51ba848b85b6bb9a29856edf016a23472b";
+      var web3js;
+      var cryptoCardsAddress = "0x2eb8d0326bc8ba99dbbadca805a906225fe009f7";
+      window.addEventListener('load', function() {
+        if (typeof web3 !== 'undefined') {
+          // web3js = new Web3(web3.currentProvider);
+          web3js = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        } else {
+          // set the provider you want from Web3.providers
+          web3js = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+
+        startApp()
+      })
+
+      function startApp() {
+        var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        getCardsTotal(cryptoCards)
+        .then(createDisplayCards);
+        // console.log(cryptoCards);
+        // test = getCardsByOwner(userAccount, cryptoCards);
+        // displayCards(test, cryptoCards);
+        var accountInterval = setInterval(function() {
+          // Check if account has changed
+          if (web3js.eth.accounts[0] !== userAccount) {
+            userAccount = web3js.eth.accounts[0];
+            // Call a function to update the UI with the new account
+            getCardsByOwner("0xcb21ce51ba848b85b6bb9a29856edf016a23472b", cryptoCards)
+            .then(displayCards);
+          }
+        }, 100);
+      }
+
+      function displayCards(ids, cryptoCards) {
+        $("#players").empty();
+        var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        for (id of ids) {
+          remGrey(id);
+        }
+      }
+
+      function createDisplayCards(ids) {
+        $("#cards").empty();
+        var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        for (id of ids) {
+          $("#cards").append('<img src="./img/' + id + '.png" alt="Messi" class="grey" height="200px" id="' + id + '">');
+        }
+      }
+
+      function createCard(id) {
+        // This is going to take a while, so update the UI to let the user know
+        // the transaction has been sent
+        var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        $("#txStatus").text("Creating new card on the blockchain. This may take a while...");
+        // Send the tx to our contract:
+        return cryptoCards.methods._createTokenPlayer(id)
+        .send({ from: "0xcb21ce51ba848b85b6bb9a29856edf016a23472b", gas:3000000 })
+        .on("receipt", function(receipt) {
+          $("#txStatus").text("Successfully created " + id + "!");
+          // Transaction was accepted into the blockchain, let's redraw the UI
+          getCardsByOwner("0xcb21ce51ba848b85b6bb9a29856edf016a23472b", cryptoCards)
+          .then(displayCards);
+        })
+        .on("error", function(error) {
+          // Do something to alert the user their transaction has failed
+          $("#txStatus").text(error);
+        });
+      }
+
+      function getCardsByOwner(owner, cryptoCards) {
+        // console.log(cryptoCards);
+        return cryptoCards.methods.getCardsByOwner(owner).call()
+      }
+
+      function getCardsTotal(cryptoCards) {
+        // console.log(cryptoCards);
+        return cryptoCards.methods.getCardTotal().call()
+      }
+
+      function getCardsDetails(id, cryptoCards) {
+        return cryptoCards.methods.players(id).call()
+      }
+
+     </script>
+
+</body>
+</html>
