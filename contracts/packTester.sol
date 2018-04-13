@@ -1,6 +1,7 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.21;
+import "./cardFactory.sol";
 
-contract Random {
+contract Random is cardFactory{
   uint _seed;
   uint randomHash;
   uint numRand;
@@ -8,11 +9,12 @@ contract Random {
   uint i;
   uint16 tierScope;
   uint8 tier;
+  uint8 incr = 0;
   
   event testSeed(uint num);
   event testRandom(uint[]  num);
   
-  mapping (uint => mapping (uint => uint[])) public tierList;
+//   mapping (uint => mapping (uint => uint[])) public tierList;
 
   function random() public returns (uint randomNumber) {
     // _seed = uint256(keccak256(keccak256(keccak256(block.blockhash(block.number), _seed), now), block.timestamp));
@@ -21,22 +23,22 @@ contract Random {
     return randomHash;
   }
   
-  function packTester(uint year) public returns (uint[]) {
+  function packTester(uint year) public {
     numRand = random();
     delimitador = 10000000;
-    uint[] storage pack;
+    // uint[] memory pack = new uint[](5);
     
     for(i = 0; i < 10; i++){
-        tierScope = uint16((numRand/(delimitador*(i+1)))%100);
+        tierScope = uint16((numRand/(delimitador**(i+1)))%100);
+        emit testSeed(tierScope);
         
-        if (tierScope>=0 && tierScope <=70) tier = 0;
-        else if (tierScope>=71 && tierScope<=91) tier = 1;
-        else if (tierScope>=92 && tierScope<=98) tier = 2;
-        else if (tierScope == 99) tier = 3;
-        // emit testSeed(tierTest);
+        if (tierScope <=70) tier = 1;
+        else if (tierScope<=91) tier = 2;
+        else if (tierScope<=98) tier = 3;
+        else tier = 4;
         i++;
-        pack.push((numRand/(delimitador*(i+1)))%tierList[year][tier].length-1);
+        
+        _createTokenPlayer(tierListTest[year][tier][(numRand/(delimitador*(i+1)))%tierCardCount[tier]-1]);
     }
-    return pack;
   }
 }
