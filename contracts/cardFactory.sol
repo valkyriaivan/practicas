@@ -1,9 +1,8 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.21;
 
 import "./ownable.sol";
-import "./packTester.sol";
 
-contract cardFactory is Ownable, Random{
+contract cardFactory is Ownable{
     
     event NewCard(uint tokenId, string name);
     event testSeed(uint num);
@@ -28,20 +27,41 @@ contract cardFactory is Ownable, Random{
         uint256 idPlayer;
     }
     tokenPlayer[] public tokenPlayers;
+    
+    struct tierTest {
+        uint idPlayer;
+    }
 
-    mapping (uint => mapping (uint => uint[])) public tierList;
+    mapping (uint => mapping (uint => mapping (uint => uint))) public tierListTest;
+    mapping (uint => uint) public tierCardCount;
+
 
     mapping (uint => uint) public playerToTeam;
     mapping (uint => uint) public tokenToPlayer;
     mapping (uint => address) public cardToOwner;
     mapping (address => uint) public ownerCardCount;
     
+    function cardFactory() public{
+        _createTeam("barcelona",2018);
+        
+        for(uint8 i = 1;i<5; i++){
+            for(uint8 n = 0;n<5;n++){
+                _createPlayer("asd",2018,i,0);
+            }
+        }
+    }
+    
+    
     function _createPlayer(string _name, uint32 _year, uint8 _tier, uint _team) public onlyOwner {
         uint256 _idPlayer = players.length;
         players.push(Player(_name, _idPlayer, _year, _tier));
         playerToTeam[_idPlayer] = _team;
         
-        tierList[_year][_tier].push(_idPlayer);
+        // uint length = tierList[_year][_tier].length-1;
+        
+        emit testSeed(tierListTest[_year][_tier][tierCardCount[_tier]] = _idPlayer);
+        tierCardCount[_tier]++;
+        emit testSeed(tierCardCount[_tier]);
     }
     
     function _createTeam(string name, uint32 year) public onlyOwner {
@@ -63,15 +83,15 @@ contract cardFactory is Ownable, Random{
         return players[tokenToPlayer[tokenId]].id;
     }
     
-    function getTokenToTier(uint year, uint tier) public returns(uint) {
-        // tierList[tier]
-        uint test;
-        for (uint i=0; i<tierList[year][tier].length; i++) {
-            emit testSeed(tierList[year][tier][i]);
-            test += tierList[year][tier][i];
-        }
-        return test;
-    }
+    // function getTokenToTier(uint year, uint tier) public returns(uint) {
+    //     // tierList[tier]
+    //     uint test;
+    //     for (uint i=0; i<tierList[year][tier].length; i++) {
+    //         emit testSeed(tierList[year][tier][i]);
+    //         test += tierList[year][tier][i];
+    //     }
+    //     return test;
+    // }
     
     function getCardsByOwner(address _owner) public view returns(uint[]) {
         uint[] memory result = new uint[](ownerCardCount[_owner]);
