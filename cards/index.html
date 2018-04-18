@@ -83,43 +83,34 @@
         element.classList.remove("grey");
       }
 
+      cryptoCardsAddress = "0x8cdaf0cd259887258bc13a92c0a6da92698644c0";
       var cryptoCards;
-      var userAccount = "0x627306090abab3a6e1400e9345bc60c78a8bef57";
-      var web3js;
-      var cryptoCardsAddress = "0x8f0483125fcb9aaaefa9209d8e9d7b9c8b9fb90f";
-      window.addEventListener('load', function() {
-        if (typeof web3 !== 'undefined') {
-          // web3js = new Web3(web3.currentProvider);
-          web3js = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
-        } else {
-          // set the provider you want from Web3.providers
-          web3js = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
-        }
-        startApp()
-      })
+      var userAccount;
+
 
       function startApp() {
-
-        var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
-        getCardsTotal(cryptoCards)
+        cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        // userAccount = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57";
+        // console.log(userAccount);
+        getCardsTotal()
         .then(createDisplayCards);
         // console.log(cryptoCards);
         // test = getCardsByOwner(userAccount, cryptoCards);
         // displayCards(test, cryptoCards);
         var accountInterval = setInterval(function() {
           // Check if account has changed
-          if (web3js.eth.accounts[0] !== userAccount) {
-            userAccount = web3js.eth.accounts[0];
+          if ("0x627306090abaB3A6e1400e9345bC60c78a8BEf57" !== userAccount) {
+            userAccount = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57";
             // Call a function to update the UI with the new account
-            getCardsByOwner("0x627306090abab3a6e1400e9345bc60c78a8bef57", cryptoCards)
+            getCardsByOwner(userAccount)
             .then(displayCards);
           }
         }, 100);
       }
 
-      function displayCards(ids, cryptoCards) {
+      function displayCards(ids) {
 
-        var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        // var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
         for (id of ids) {
           remGrey(id);
 
@@ -132,7 +123,7 @@
 
       function createDisplayCards(ids) {
         $("#cards").empty();
-        var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        // var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
         // for (id of ids) {
         //   $("#cards").append('<img src="./img/' + id + '.png" alt="Messi" class="grey" height="200px" id="' + id + '">');
         // }
@@ -142,7 +133,7 @@
             var nombre = web3js.utils.toUtf8(card.name);
             $("#cards").append(
               `<div class= "a grey" id="${card.idPlayer}">
-                <img id="image1" class="img1" style="position: relative; width: 200px;" src="./img/tier/${card.tier}.png"/>
+                <img id="image1" class="img1" style="position: relative; width: 200px;" src="./img/tier2/${card.tier}.png"/>
                   <div class = "b">
                     <img id="image2" class="img2" style="position: absolute; width: 200px;" src="./img/player/1.png"/>
                     <div class = "c">
@@ -161,26 +152,37 @@
       function comprarPack() {
         // This is going to take a while, so update the UI to let the user know
         // the transaction has been sent
-        var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        // var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
         $("#txStatus").text("Creating new card on the blockchain. This may take a while...");
         // Send the tx to our contract:
-        cryptoCards.methods.packTester(2018).call({from: "0x627306090abab3a6e1400e9345bc60c78a8bef57", gas: 9999999});
+        cryptoCards.methods.packTester(2018).call({from: userAccount, gas: 9999999});
       }
 
-      function getCardsByOwner(owner, cryptoCards) {
+      function getCardsByOwner() {
         // console.log(cryptoCards);
-        return cryptoCards.methods.getCardsByOwner(owner).call()
+        return cryptoCards.methods.getCardsByOwner(userAccount).call()
       }
 
-      function getCardsTotal(cryptoCards) {
+      function getCardsTotal() {
         // console.log(cryptoCards);
         return cryptoCards.methods.getCardTotal().call()
       }
 
       function getCardsDetails(id) {
-        var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        // var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
         return cryptoCards.methods.players(id).call();
       }
+
+      window.addEventListener('load', function() {
+        if (typeof web3 !== 'undefined') {
+          // web3js = new Web3(web3.currentProvider);
+          web3js = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+        } else {
+          // set the provider you want from Web3.providers
+          web3js = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+        }
+        startApp()
+      })
 
      </script>
 
