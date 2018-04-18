@@ -21,11 +21,11 @@ var cryptoCardsABI = [
 		"inputs": [
 			{
 				"name": "_name",
-				"type": "string"
+				"type": "bytes16"
 			},
 			{
 				"name": "_year",
-				"type": "uint32"
+				"type": "uint16"
 			},
 			{
 				"name": "_tier",
@@ -33,7 +33,7 @@ var cryptoCardsABI = [
 			},
 			{
 				"name": "_team",
-				"type": "uint256"
+				"type": "uint16"
 			}
 		],
 		"name": "_createPlayer",
@@ -47,11 +47,11 @@ var cryptoCardsABI = [
 		"inputs": [
 			{
 				"name": "name",
-				"type": "string"
+				"type": "bytes16"
 			},
 			{
 				"name": "year",
-				"type": "uint32"
+				"type": "uint16"
 			}
 		],
 		"name": "_createTeam",
@@ -65,7 +65,7 @@ var cryptoCardsABI = [
 		"inputs": [
 			{
 				"name": "_idPlayer",
-				"type": "uint256"
+				"type": "uint16"
 			}
 		],
 		"name": "_createTokenPlayer",
@@ -89,6 +89,32 @@ var cryptoCardsABI = [
 			}
 		],
 		"name": "NewCard",
+		"type": "event"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "year",
+				"type": "uint16"
+			}
+		],
+		"name": "packTester",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "num",
+				"type": "address"
+			}
+		],
+		"name": "testSeed",
 		"type": "event"
 	},
 	{
@@ -192,25 +218,6 @@ var cryptoCardsABI = [
 	},
 	{
 		"constant": true,
-		"inputs": [
-			{
-				"name": "tier",
-				"type": "uint256"
-			}
-		],
-		"name": "getTokenToTier",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
 		"inputs": [],
 		"name": "owner",
 		"outputs": [
@@ -254,15 +261,19 @@ var cryptoCardsABI = [
 		"outputs": [
 			{
 				"name": "name",
-				"type": "string"
-			},
-			{
-				"name": "id",
-				"type": "uint256"
+				"type": "bytes16"
 			},
 			{
 				"name": "year",
-				"type": "uint32"
+				"type": "uint16"
+			},
+			{
+				"name": "idPlayer",
+				"type": "uint16"
+			},
+			{
+				"name": "idTeam",
+				"type": "uint16"
 			},
 			{
 				"name": "tier",
@@ -281,38 +292,34 @@ var cryptoCardsABI = [
 				"type": "uint256"
 			}
 		],
-		"name": "playerToTeam",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
 		"name": "teams",
 		"outputs": [
 			{
 				"name": "name",
-				"type": "string"
-			},
-			{
-				"name": "id",
-				"type": "uint256"
+				"type": "bytes16"
 			},
 			{
 				"name": "year",
-				"type": "uint32"
+				"type": "uint16"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "tierCardCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
@@ -329,9 +336,13 @@ var cryptoCardsABI = [
 			{
 				"name": "",
 				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "uint256"
 			}
 		],
-		"name": "tierList",
+		"name": "tierListTest",
 		"outputs": [
 			{
 				"name": "",
@@ -353,31 +364,8 @@ var cryptoCardsABI = [
 		"name": "tokenPlayers",
 		"outputs": [
 			{
-				"name": "idToken",
-				"type": "uint256"
-			},
-			{
 				"name": "idPlayer",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "tokenToPlayer",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
+				"type": "uint16"
 			}
 		],
 		"payable": false,

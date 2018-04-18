@@ -14,21 +14,67 @@
     <script language="javascript" type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <style>
       .grey {
-          -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
-          filter: grayscale(100%);
+        -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+        filter: grayscale(100%);
+      }
+      @font-face {
+         font-family: Bebas;
+         src: url(font/BEBAS.ttf);
+      }
+      .a {
+        position: relative;
+        display: inline-block;
+        margin: 5px;
+        /* height: 200px; */
+        width: 200px;
+      }
+
+      .b {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        /* text-align: center; */
+        /* height: 100px; */
+        width: 200px;
+      }
+      .c {
+        position: absolute;
+        left: 50%;
+        margin-top: 105.5%;
+        transform:translateX(-50%);
+        /* transform:translateY(+1000%); */
+      }
+      .d {
+        position: absolute;
+        left: 85%;
+        /* margin-top: %; */
+        transform:translateX(-50%);
+        /* transform:translateY(+1000%); */
+      }
+      .d>.nombre {
+        font-family: Bebas;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: rgb(255, 124, 0);
+      }
+      .nombre {
+        font-family: Bebas;
+        text-transform: uppercase;
+        color: white;
+        /* font-weight: bold; */
       }
     </style>
 </head>
 <body>
-    <div class="container">
-      <button onclick="createCard(1)">Click me</button>
-      <button onclick="remGrey(1)">Try it</button>
+    <div class="container-flow">
+      <button onclick="comprarPack()">Comprar sobre</button>
       <!-- <img src="./img/messi.png" alt="Messi" class="grey" height="200px" id="1">
       <img src="./img/cristiano.png" alt="Cristiano" class="grey" height="200px" id="2">
       <img src="./img/neymar.png" alt="Neymar" class="grey" height="200px" id="0"> -->
       <div id="txStatus"></div>
       <div id="cards"></div>
       <div id="players"></div>
+      <div id="container"></div>
     </div>
 
     <script>
@@ -36,23 +82,24 @@
         var element = document.getElementById(id);
         element.classList.remove("grey");
       }
+
       var cryptoCards;
-      var userAccount = "0xcb21ce51ba848b85b6bb9a29856edf016a23472b";
+      var userAccount = "0x627306090abab3a6e1400e9345bc60c78a8bef57";
       var web3js;
-      var cryptoCardsAddress = "0x2eb8d0326bc8ba99dbbadca805a906225fe009f7";
+      var cryptoCardsAddress = "0x8f0483125fcb9aaaefa9209d8e9d7b9c8b9fb90f";
       window.addEventListener('load', function() {
         if (typeof web3 !== 'undefined') {
           // web3js = new Web3(web3.currentProvider);
-          web3js = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+          web3js = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
         } else {
           // set the provider you want from Web3.providers
-          web3js = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+          web3js = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
         }
-
         startApp()
       })
 
       function startApp() {
+
         var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
         getCardsTotal(cryptoCards)
         .then(createDisplayCards);
@@ -64,46 +111,60 @@
           if (web3js.eth.accounts[0] !== userAccount) {
             userAccount = web3js.eth.accounts[0];
             // Call a function to update the UI with the new account
-            getCardsByOwner("0xcb21ce51ba848b85b6bb9a29856edf016a23472b", cryptoCards)
+            getCardsByOwner("0x627306090abab3a6e1400e9345bc60c78a8bef57", cryptoCards)
             .then(displayCards);
           }
         }, 100);
       }
 
       function displayCards(ids, cryptoCards) {
-        $("#players").empty();
+
         var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
         for (id of ids) {
           remGrey(id);
+
+          var elementCant = parseInt(document.getElementById("cantidad-"+id).textContent);
+          elementCant++
+          console.log(elementCant);
+          document.getElementById("cantidad-"+id).innerHTML = elementCant;
         }
       }
 
       function createDisplayCards(ids) {
         $("#cards").empty();
         var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        // for (id of ids) {
+        //   $("#cards").append('<img src="./img/' + id + '.png" alt="Messi" class="grey" height="200px" id="' + id + '">');
+        // }
         for (id of ids) {
-          $("#cards").append('<img src="./img/' + id + '.png" alt="Messi" class="grey" height="200px" id="' + id + '">');
+          getCardsDetails(id)
+          .then(function(card) {
+            var nombre = web3js.utils.toUtf8(card.name);
+            $("#cards").append(
+              `<div class= "a grey" id="${card.idPlayer}">
+                <img id="image1" class="img1" style="position: relative; width: 200px;" src="./img/tier/${card.tier}.png"/>
+                  <div class = "b">
+                    <img id="image2" class="img2" style="position: absolute; width: 200px;" src="./img/player/1.png"/>
+                    <div class = "c">
+                      <p class="nombre">` + nombre + `</p>
+                    </div>
+                    <div class = "d">
+                      <p class="nombre">x<span id="cantidad-${card.idPlayer}"> 0</span></p>
+                    </div>
+                  </div>
+              </div>`
+            );
+          });
         }
       }
 
-      function createCard(id) {
+      function comprarPack() {
         // This is going to take a while, so update the UI to let the user know
         // the transaction has been sent
         var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
         $("#txStatus").text("Creating new card on the blockchain. This may take a while...");
         // Send the tx to our contract:
-        return cryptoCards.methods._createTokenPlayer(id)
-        .send({ from: "0xcb21ce51ba848b85b6bb9a29856edf016a23472b", gas:3000000 })
-        .on("receipt", function(receipt) {
-          $("#txStatus").text("Successfully created " + id + "!");
-          // Transaction was accepted into the blockchain, let's redraw the UI
-          getCardsByOwner("0xcb21ce51ba848b85b6bb9a29856edf016a23472b", cryptoCards)
-          .then(displayCards);
-        })
-        .on("error", function(error) {
-          // Do something to alert the user their transaction has failed
-          $("#txStatus").text(error);
-        });
+        cryptoCards.methods.packTester(2018).call({from: "0x627306090abab3a6e1400e9345bc60c78a8bef57", gas: 9999999});
       }
 
       function getCardsByOwner(owner, cryptoCards) {
@@ -116,8 +177,9 @@
         return cryptoCards.methods.getCardTotal().call()
       }
 
-      function getCardsDetails(id, cryptoCards) {
-        return cryptoCards.methods.players(id).call()
+      function getCardsDetails(id) {
+        var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        return cryptoCards.methods.players(id).call();
       }
 
      </script>
