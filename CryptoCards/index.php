@@ -1,89 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+<?php include "./include/header.php";?>
+  <div class="content-wrapper">
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active">My Dashboard</li>
+      </ol>
+      <!-- Icon Cards-->
+      <div class="row">
+        <div class="col-xl-3 col-sm-3 mb-3">
+          <div class="card text-white bg-success o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+                <img src="./img/logo-eth.png" height="150px">
+              </div>
+              <div class="mr-5">Comprar pack</div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="#">
+              <span class="float-left">Compra tus packs aquí </span>
+              <span class="float-right">
+                <i class="fa fa-angle-right"></i>
+              </span>
+            </a>
+          </div>
+        </div>
 
-    <link rel="stylesheet" type="text/css" href="main.css">
+      </div>
+      <!-- Area Chart Example-->
+      <div class="card mb-3">
+        <div class="card-header" id="nombreT"></div>
+        <div class="card-body">
+          <div id="cards"></div>
+        </div>
+        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+      </div>
 
-    <script language="javascript" type="text/javascript" src="web3.min.js"></script>
-    <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script language="javascript" type="text/javascript" src="cards_abi.js"></script>
-    <script language="javascript" type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <style>
-      .grey {
-        -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
-        filter: grayscale(100%);
-      }
-      @font-face {
-         font-family: Bebas;
-         src: url(font/BEBAS.ttf);
-      }
-      .a {
-        position: relative;
-        display: inline-block;
-        margin: 5px;
-        /* height: 200px; */
-        width: 200px;
-      }
-
-      .b {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        /* text-align: center; */
-        /* height: 100px; */
-        width: 200px;
-      }
-      .c {
-        position: absolute;
-        left: 50%;
-        margin-top: 105.5%;
-        transform:translateX(-50%);
-        /* transform:translateY(+1000%); */
-      }
-      .d {
-        position: absolute;
-        left: 85%;
-        /* margin-top: %; */
-        transform:translateX(-50%);
-        /* transform:translateY(+1000%); */
-      }
-      .d>.nombre {
-        font-family: Bebas;
-        text-transform: uppercase;
-        font-weight: bold;
-        color: rgb(255, 124, 0);
-      }
-      .nombre {
-        font-family: Bebas;
-        text-transform: uppercase;
-        color: white;
-        /* font-weight: bold; */
-      }
-    </style>
-</head>
-<body>
-    <div class="container-flow">
-      <button onclick="comprarPack()">Comprar sobre</button>
-      <!-- <img src="./img/messi.png" alt="Messi" class="grey" height="200px" id="1">
-      <img src="./img/cristiano.png" alt="Cristiano" class="grey" height="200px" id="2">
-      <img src="./img/neymar.png" alt="Neymar" class="grey" height="200px" id="0"> -->
-      <div id="txStatus"></div>
-      <div id="cards"></div>
-      <div id="players"></div>
-      <div id="container"></div>
     </div>
-
     <script>
       function remGrey(id){
         var element = document.getElementById(id);
         element.classList.remove("grey");
       }
 
-      cryptoCardsAddress = "0xf25186b5081ff5ce73482ad761db0eb0d25abfbf";
+      cryptoCardsAddress = "0x82d50ad3c1091866e258fd0f1a7cc9674609d254";
       var cryptoCards;
       var userAccount;
 
@@ -123,6 +84,14 @@
 
       function createDisplayCards(ids) {
         $("#cards").empty();
+        $("#nombreT").empty();
+        getTeamDetails(0)
+        .then(function(team) {
+          var nombre = web3js.utils.toUtf8(team.name);
+          nombre = nombre.toUpperCase();
+          $("#nombreT").append(
+            `<img src="./img/teams/0.png" height="30px">  ` + nombre + ` ${team.year}`);
+        });
         // var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
         // for (id of ids) {
         //   $("#cards").append('<img src="./img/' + id + '.png" alt="Messi" class="grey" height="200px" id="' + id + '">');
@@ -153,7 +122,6 @@
         // This is going to take a while, so update the UI to let the user know
         // the transaction has been sent
         // var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
-        $("#txStatus").text("Creating new card on the blockchain. This may take a while...");
         // Send the tx to our contract:
         cryptoCards.methods.packTester(2018).call({from: userAccount, gas: 9999999});
       }
@@ -173,6 +141,11 @@
         return cryptoCards.methods.players(id).call();
       }
 
+      function getTeamDetails(id) {
+        // var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        return cryptoCards.methods.teams(id).call();
+      }
+
       window.addEventListener('load', function() {
         if (typeof web3 !== 'undefined') {
           // web3js = new Web3(web3.currentProvider);
@@ -185,6 +158,6 @@
       })
 
      </script>
-
-</body>
-</html>
+    <!-- /.container-fluid-->
+    <!-- /.content-wrapper-->
+<?php include "./include/footer.php";?>
