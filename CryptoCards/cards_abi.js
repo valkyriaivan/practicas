@@ -21,7 +21,7 @@ var cryptoCardsABI = [
 		"inputs": [
 			{
 				"name": "_name",
-				"type": "bytes16"
+				"type": "bytes24"
 			},
 			{
 				"name": "_year",
@@ -79,6 +79,18 @@ var cryptoCardsABI = [
 		"inputs": [
 			{
 				"indexed": false,
+				"name": "num",
+				"type": "address"
+			}
+		],
+		"name": "testSeed",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
 				"name": "tokenId",
 				"type": "uint256"
 			},
@@ -89,6 +101,18 @@ var cryptoCardsABI = [
 			}
 		],
 		"name": "NewCard",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "",
+				"type": "bytes29"
+			}
+		],
+		"name": "errorBuy",
 		"type": "event"
 	},
 	{
@@ -104,18 +128,6 @@ var cryptoCardsABI = [
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "num",
-				"type": "address"
-			}
-		],
-		"name": "testSeed",
-		"type": "event"
 	},
 	{
 		"constant": false,
@@ -201,6 +213,44 @@ var cryptoCardsABI = [
 		"constant": true,
 		"inputs": [
 			{
+				"name": "team",
+				"type": "uint16"
+			}
+		],
+		"name": "getPlayersByTeam",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint16[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "year",
+				"type": "uint16"
+			}
+		],
+		"name": "getTeamsByYear",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint16[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
 				"name": "tokenId",
 				"type": "uint256"
 			}
@@ -254,6 +304,25 @@ var cryptoCardsABI = [
 		"inputs": [
 			{
 				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "ownerCooldown",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
 				"type": "uint256"
 			}
 		],
@@ -261,7 +330,7 @@ var cryptoCardsABI = [
 		"outputs": [
 			{
 				"name": "name",
-				"type": "bytes16"
+				"type": "bytes24"
 			},
 			{
 				"name": "year",
@@ -300,6 +369,10 @@ var cryptoCardsABI = [
 			},
 			{
 				"name": "year",
+				"type": "uint16"
+			},
+			{
+				"name": "idTeam",
 				"type": "uint16"
 			}
 		],
