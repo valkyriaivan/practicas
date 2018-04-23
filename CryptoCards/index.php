@@ -29,6 +29,7 @@
           </div>
         </div>
         <div id="txStatus"></div>
+        <div id="txStatus2"></div>
 
       </div>
       <!-- Area Chart Example-->
@@ -39,6 +40,31 @@
         </div>
         <div class="card-footer small text-muted">Autor: Ivan García Gálvez</div>
       </div>
+      <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="packModal">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     </div>
     <script>
@@ -47,13 +73,15 @@
         element.classList.remove("grey");
       }
 
-      cryptoCardsAddress = "0x75076e4fbba61f65efb41d64e45cff340b1e518a";
+      cryptoCardsAddress = "0xe28158ecfde143e2536761c3254c7c31efd97271";
       var cryptoCards;
       var userAccount;
+      // var packEvent;
 
 
       function startApp() {
         cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        // packEvent = cryptoCards.NewPack();
         // userAccount = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57";
         // console.log(userAccount);
         getTeamsByYear()
@@ -74,28 +102,28 @@
           }
         }, 100);
 
-        var timerInterval = setInterval(function() {
-          // Check if account has changed
-          // var start = Date.now();
-          getOwnerCooldown(userAccount).then(function(t){
-            if (t >= Date.now()) {
-              var millis = t - Date.now();
-              $("#txStatus").text("Cooldown: " + Math.floor(millis/1000));
-            }
-          });
-        }, 1000);
+        cryptoCards.events.NewPack()
+        .on("data", function(event) {
+          let data = event.returnValues;
+          // console.log(data.packOwner);
+          $("#txStatus2").text("Has comprado un sobre!" + data.packOwner);
+        }).on("error", console.error);
       }
 
       function displayCards(ids) {
 
         // var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
+        var nameEls = document.getElementsByClassName('cant');
+        for (var i = 0; i < nameEls.length; i++) {
+          nameEls[i].innerHTML = 0;
+        }
+
         setTimeout(function(){
           for (id of ids) {
             remGrey(id);
 
             var elementCant = parseInt(document.getElementById("cantidad-"+id).textContent);
             elementCant++
-            console.log(elementCant);
             document.getElementById("cantidad-"+id).innerHTML = elementCant;
           }
         }, 500);
@@ -124,7 +152,7 @@
                       <p class="nombre">` + nombre + `</p>
                     </div>
                     <div class = "d">
-                      <p class="nombre">x<span id="cantidad-${card.idPlayer}"> 0</span></p>
+                      <p class="nombre">x<span id="cantidad-${card.idPlayer}" class="cant"> 0</span></p>
                     </div>
                   </div>
               </div>`
@@ -154,22 +182,57 @@
       }
 
       function comprarPack() {
-        // This is going to take a while, so update the UI to let the user know
-        // the transaction has been sent
-        // var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
-        // Send the tx to our contract:
         cryptoCards.methods.packTester(2018)
         .send({ from: userAccount, gas: 3000000 })
         .on("receipt", function(receipt) {
           $("#txStatus").text("Has comprado un sobre!");
           getCardsByOwner(userAccount)
           .then(displayCards);
+          getOwnerLastPack(userAccount)
+          .then(displayPack);
         })
         .on("error", function(error) {
           $("#txStatus").text(error);
         });
       }
 
+      function displayPack(packCards) {
+        console.log(packCards)
+        for (packCard of packCards) {
+          getCardsDetails(packCard)
+          .then(function(card) {
+            var nombre = web3js.utils.toUtf8(card.name);
+            $("#cards").append(
+              `<div class= "a grey" id="${card.idPlayer}">
+                <img id="image1" class="img1" style="position: relative; width: 200px;" src="./img/tier2/${card.tier}.png"/>
+                  <div class = "b">
+                    <img id="image2" class="img2" style="position: absolute; width: 200px;" src="./img/player/1.png"/>
+                    <div class = "c">
+                      <p class="nombre">` + nombre + `</p>
+                    </div>
+                    <div class = "d">
+                      <p class="nombre">x<span id="cantidad-${card.idPlayer}" class="cant"> 0</span></p>
+                    </div>
+                  </div>
+              </div>`
+            );
+          });
+        }
+        $("#exampleModalCenter").modal()
+      }
+
+      // function buyPack() {
+      //   comprarPack()
+      //   .then(displayPack);
+      // }
+
+
+
+
+      // function comprarPack() {
+      //   // return cryptoCards.methods.packTester(2018).send({ from: userAccount, gas: 3000000 });
+      //   cryptoCards.methods.packTester(2018).send({ from: userAccount, gas: 3000000 })
+      // }
       function getCardsByOwner() {
         // console.log(cryptoCards);
         return cryptoCards.methods.getCardsByOwner(userAccount).call()
@@ -193,18 +256,16 @@
         return cryptoCards.methods.teams(id).call()
       }
 
-      function getOwnerCooldown(owner) {
-        // var cryptoCards = new web3js.eth.Contract(cryptoCardsABI, cryptoCardsAddress);
-        return cryptoCards.methods.ownerCooldown(owner).call()
-      }
 
       window.addEventListener('load', function() {
         if (typeof web3 !== 'undefined') {
           // web3js = new Web3(web3.currentProvider);
           web3js = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+          // web3js = new Web3(web3.currentProvider);
         } else {
           // set the provider you want from Web3.providers
           web3js = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+          // web3js = new Web3(web3.currentProvider);
         }
         startApp()
       })

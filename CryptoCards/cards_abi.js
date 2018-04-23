@@ -1,20 +1,31 @@
 var cryptoCardsABI = [
 	{
-		"anonymous": false,
+		"constant": false,
 		"inputs": [
 			{
-				"indexed": true,
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "newOwner",
-				"type": "address"
+				"name": "year",
+				"type": "uint16"
 			}
 		],
-		"name": "OwnershipTransferred",
-		"type": "event"
+		"name": "packTester",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getCardsLength",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"constant": false,
@@ -61,130 +72,22 @@ var cryptoCardsABI = [
 		"type": "function"
 	},
 	{
-		"constant": false,
+		"constant": true,
 		"inputs": [
 			{
-				"name": "_idPlayer",
-				"type": "uint16"
-			}
-		],
-		"name": "_createTokenPlayer",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "num",
-				"type": "address"
-			}
-		],
-		"name": "testSeed",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "tokenId",
+				"name": "",
 				"type": "uint256"
 			},
 			{
-				"indexed": false,
-				"name": "name",
-				"type": "string"
-			}
-		],
-		"name": "NewCard",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
 				"name": "",
-				"type": "bytes29"
-			}
-		],
-		"name": "errorBuy",
-		"type": "event"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "year",
-				"type": "uint16"
-			}
-		],
-		"name": "packTester",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
+				"type": "uint256"
+			},
 			{
 				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "cardToOwner",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "_owner",
-				"type": "address"
-			}
-		],
-		"name": "getCardsByOwner",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256[]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getCardsLength",
+		"name": "tierListTest",
 		"outputs": [
 			{
 				"name": "",
@@ -213,15 +116,15 @@ var cryptoCardsABI = [
 		"constant": true,
 		"inputs": [
 			{
-				"name": "team",
-				"type": "uint16"
+				"name": "",
+				"type": "uint256"
 			}
 		],
-		"name": "getPlayersByTeam",
+		"name": "tierCardCount",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint16[]"
+				"type": "uint256"
 			}
 		],
 		"payable": false,
@@ -232,11 +135,104 @@ var cryptoCardsABI = [
 		"constant": true,
 		"inputs": [
 			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "teams",
+		"outputs": [
+			{
+				"name": "name",
+				"type": "bytes16"
+			},
+			{
 				"name": "year",
+				"type": "uint16"
+			},
+			{
+				"name": "idTeam",
 				"type": "uint16"
 			}
 		],
-		"name": "getTeamsByYear",
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "tokenPlayers",
+		"outputs": [
+			{
+				"name": "idPlayer",
+				"type": "uint16"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_idPlayer",
+				"type": "uint16"
+			}
+		],
+		"name": "_createTokenPlayer",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "ownerCardCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "team",
+				"type": "uint16"
+			}
+		],
+		"name": "getPlayersByTeam",
 		"outputs": [
 			{
 				"name": "",
@@ -268,12 +264,17 @@ var cryptoCardsABI = [
 	},
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "owner",
+		"inputs": [
+			{
+				"name": "year",
+				"type": "uint16"
+			}
+		],
+		"name": "getTeamsByYear",
 		"outputs": [
 			{
 				"name": "",
-				"type": "address"
+				"type": "uint16[]"
 			}
 		],
 		"payable": false,
@@ -284,15 +285,15 @@ var cryptoCardsABI = [
 		"constant": true,
 		"inputs": [
 			{
-				"name": "",
+				"name": "_owner",
 				"type": "address"
 			}
 		],
-		"name": "ownerCardCount",
+		"name": "getCardsByOwner",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256"
+				"type": "uint256[]"
 			}
 		],
 		"payable": false,
@@ -300,22 +301,17 @@ var cryptoCardsABI = [
 		"type": "function"
 	},
 	{
-		"constant": true,
+		"constant": false,
 		"inputs": [
 			{
-				"name": "",
+				"name": "newOwner",
 				"type": "address"
 			}
 		],
-		"name": "ownerCooldown",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
+		"name": "transferOwnership",
+		"outputs": [],
 		"payable": false,
-		"stateMutability": "view",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -361,88 +357,73 @@ var cryptoCardsABI = [
 				"type": "uint256"
 			}
 		],
-		"name": "teams",
+		"name": "cardToOwner",
 		"outputs": [
 			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "packOwner",
+				"type": "address"
+			}
+		],
+		"name": "NewPack",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
 				"name": "name",
-				"type": "bytes16"
-			},
-			{
-				"name": "year",
-				"type": "uint16"
-			},
-			{
-				"name": "idTeam",
-				"type": "uint16"
+				"type": "string"
 			}
 		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
+		"name": "NewCard",
+		"type": "event"
 	},
 	{
-		"constant": true,
+		"anonymous": false,
 		"inputs": [
 			{
-				"name": "",
-				"type": "uint256"
+				"indexed": false,
+				"name": "num",
+				"type": "address"
 			}
 		],
-		"name": "tierCardCount",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
+		"name": "testSeed",
+		"type": "event"
 	},
 	{
-		"constant": true,
+		"anonymous": false,
 		"inputs": [
 			{
-				"name": "",
-				"type": "uint256"
+				"indexed": true,
+				"name": "previousOwner",
+				"type": "address"
 			},
 			{
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"name": "",
-				"type": "uint256"
+				"indexed": true,
+				"name": "newOwner",
+				"type": "address"
 			}
 		],
-		"name": "tierListTest",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "tokenPlayers",
-		"outputs": [
-			{
-				"name": "idPlayer",
-				"type": "uint16"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
+		"name": "OwnershipTransferred",
+		"type": "event"
 	}
 ]

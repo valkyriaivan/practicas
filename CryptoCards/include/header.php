@@ -18,6 +18,7 @@
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
   <script language="javascript" type="text/javascript" src="web3.min.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script> -->
   <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script language="javascript" type="text/javascript" src="cards_abi.js"></script>
   <script language="javascript" type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
